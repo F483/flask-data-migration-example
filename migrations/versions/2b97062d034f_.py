@@ -52,7 +52,10 @@ def upgrade():
     op.add_column(
         'test', sa.Column('hexdata', sa.String(length=128), nullable=True)
     )
+
     data_to_hex()
+
+    # use batch alter for sqlite compatibility
     with op.batch_alter_table('test') as batch_op:
         batch_op.drop_column('base64data')
 
@@ -61,6 +64,9 @@ def downgrade():
     op.add_column(
         'test', sa.Column('base64data', sa.VARCHAR(length=128), nullable=True)
     )
+
     data_from_hex()
+
+    # use batch alter for sqlite compatibility
     with op.batch_alter_table('test') as batch_op:
         batch_op.drop_column('hexdata')
